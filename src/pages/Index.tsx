@@ -1,13 +1,15 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { HologramEngine } from '@/components/HologramEngine';
+import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <>
+      <Helmet>
+        <title>Hologram Engine - 3D Particle Visualization</title>
+        <meta name="description" content="Interactive 3D hologram particle engine with voice commands, gesture controls, and stunning visual effects. Experience futuristic particle morphing and animations." />
+      </Helmet>
+      <HologramEngine />
+    </>
   );
 };
 
