@@ -8,7 +8,8 @@ An interactive 3D particle simulation controlled by voice and text commands.
 
 Eon Spark is a web-based holographic interface that visualizes various 3D shapes as particle systems. Users can interact with the hologram using voice commands or a text-based terminal to change shapes, apply physics simulations, control animations, and modify colors.
 
-![Project link](https://future-ideas-2025.lovable.app/)
+![Project link]
+## : https://future-ideas-2025.lovable.app/
 
 ## Table of Contents
 
