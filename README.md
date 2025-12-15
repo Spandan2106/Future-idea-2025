@@ -1,73 +1,97 @@
-# Welcome to your Lovable project
+--# Eon Spark
 
-## Project info
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+An interactive 3D particle simulation controlled by voice and text commands.
 
-## How can I edit this code?
+## Description
 
-There are several ways of editing your application.
+Eon Spark is a web-based holographic interface that visualizes various 3D shapes as particle systems. Users can interact with the hologram using voice commands or a text-based terminal to change shapes, apply physics simulations, control animations, and modify colors.
 
-**Use Lovable**
+![Project link](https://future-ideas-2025.lovable.app/)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Table of Contents
 
-Changes made via Lovable will be committed automatically to this repo.
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Contact](#contact)
 
-**Use your preferred IDE**
+## Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- ✨ Feature 1: A short description of a key feature.
+- 🚀 Feature 2: Another cool thing your project can do.
+- 💡 Feature 3: And one more.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Technologies Used
 
-Follow these steps:
+List the major frameworks, libraries, and tools your project uses.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- [TypeScript](https://www.typescriptlang.org/)
+- [React](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [Three.js](https://threejs.org/) & [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
+- [Tailwind CSS](https://tailwindcss.com/)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
+Provide step-by-step instructions on how to get a development environment running.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/eon-spark.git
+    cd eon-spark
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+## Usage
+
+Start the development server:
+
+```bash
+# Run the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Then, open your browser and go to `http://127.0.0.1:8000`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Configuration
 
-**Use GitHub Codespaces**
+Explain any necessary configuration or environment variables.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Create a `.env` file in the root directory and add the following variables:
 
-## What technologies are used for this project?
+```
+DATABASE_URL="your_database_connection_string"
+SECRET_KEY="your_secret_key"
+```
 
-This project is built with:
+## Contributing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-## How can I deploy this project?
+Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests to us.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## License
 
-## Can I connect a custom domain to my Lovable project?
+This project is licensed under the MIT License - see the LICENSE.md file for details.
 
-Yes, you can!
+## Acknowledgments
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- Hat tip to anyone whose code was used.
+- Inspiration.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Contact
+
+Your Name - @your_twitter - email@example.com
+
+Project Link: https://github.com/your-username/your-project-name

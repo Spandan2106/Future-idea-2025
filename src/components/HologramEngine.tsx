@@ -8,6 +8,7 @@ import { MicButton } from './hologram/MicButton';
 import { InitOverlay } from './hologram/InitOverlay';
 import { WebcamPreview } from './hologram/WebcamPreview';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
+import { useGestureRecognition } from '@/hooks/useGestureRecognition';
 import { ShapeName } from '@/hooks/useParticleGeometry';
 
 const allShapes: ShapeName[] = [
@@ -142,42 +143,58 @@ export const HologramEngine = () => {
     setTimeout(() => setTranscript(''), 3000);
   }, []);
 
+  const handleGesture = useCallback((gesture: string) => {
+    if (!isGestureActive) return;
+
+    // Simple mapping from gesture to command
+    if (gesture === 'Open_Palm') {
+      processCommand('explode');
+      setStatusText('GESTURE: EXPLODE');
+    } else if (gesture === 'Closed_Fist') {
+      processCommand('compress');
+      setStatusText('GESTURE: COMPRESS');
+    }
+  }, [isGestureActive, processCommand]);
+
+  useGestureRecognition(videoRef, handleGesture);
+
   const { isActive: isVoiceActive, startRecognition, toggleRecognition } = useVoiceRecognition({
     onCommand: processCommand,
     onTranscript: handleTranscript,
   });
 
-  const handleStart = useCallback(async () => {
+  const handleStart = () => {
     setIsInitialized(true);
     startRecognition();
+    // Automatically start the webcam after initialization
+    handleToggleCamera(true);
+  };
 
-    // Start webcam
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        setIsCameraActive(true);
-      }
-    } catch (e) {
-      console.log('Webcam not available');
-    }
-  }, [startRecognition]);
+  const handleToggleCamera = useCallback(async (forceOn = false) => {
+    const shouldBeActive = forceOn || !isCameraActive;
 
-  const handleToggleCamera = useCallback(() => {
-    if (isCameraActive && videoRef.current?.srcObject) {
+    if (!shouldBeActive && videoRef.current?.srcObject) {
+      // Turn off camera
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach(track => track.stop());
       videoRef.current.srcObject = null;
       setIsCameraActive(false);
-    } else {
-      navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
-        .then(stream => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-            setIsCameraActive(true);
-          }
-        })
-        .catch(() => console.log('Webcam not available'));
+      return;
+    }
+
+    // Turn on camera
+    try {
+      if (videoRef.current && !videoRef.current.srcObject) {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play(); // Start playing the video stream
+        setIsCameraActive(true);
+      }
+      }
+    } catch (e) {
+      console.error('Webcam access was denied or not available.', e);
+      setIsCameraActive(false);
     }
   }, [isCameraActive]);
 
