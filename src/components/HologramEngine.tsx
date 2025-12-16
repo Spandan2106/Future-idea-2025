@@ -7,7 +7,7 @@ import { TranscriptDisplay } from './hologram/TranscriptDisplay';
 import { MicButton } from './hologram/MicButton';
 import { InitOverlay } from './hologram/InitOverlay';
 import { WebcamPreview } from './hologram/WebcamPreview';
-import { AudioVisualIntro } from './hologram/AudioVisualIntro';
+import { AudioVisualIntro, AudioVisualIntroRef } from './hologram/AudioVisualIntro';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
 import { useGestureRecognition } from '@/hooks/useGestureRecognition';
 import { ShapeName } from '@/hooks/useParticleGeometry';
@@ -40,9 +40,11 @@ export const HologramEngine = () => {
   const [transcript, setTranscript] = useState('');
   const [statusText, setStatusText] = useState('READY');
   const [detectedGesture, setDetectedGesture] = useState<string>('None');
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const cameraStreamRef = useRef<MediaStream | null>(null);
+  const audioIntroRef = useRef<AudioVisualIntroRef>(null);
   const showcaseIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isShowcase, setIsShowcase] = useState(false);
 
@@ -105,13 +107,33 @@ export const HologramEngine = () => {
       }, 5000);
     }
     else if (cmd.includes('toggle gesture')) { setIsGestureActive(prev => !prev); }
+    else if (cmd.includes('stop camera') || cmd.includes('turn off camera')) { 
+      // Stop camera inline
+      const stream = cameraStreamRef.current;
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      cameraStreamRef.current = null;
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+      setDetectedGesture('None');
+      setIsCameraActive(false);
+      setStatusText('CAMERA STOPPED');
+    }
+    else if (cmd.includes('stop audio') || cmd.includes('mute')) { 
+      audioIntroRef.current?.stopAudio();
+      window.speechSynthesis?.cancel();
+      setIsAudioPlaying(false);
+      setStatusText('AUDIO STOPPED');
+    }
 
     // Rotation
     else if (cmd.includes('rotate vertical')) { setRotationAxis('x'); }
     else if (cmd.includes('rotate horizontal')) { setRotationAxis('y'); }
     else if (cmd.includes('spin fast')) { setRotationSpeed(0.01); setIsSpinning(true); }
     else if (cmd.includes('spin slow')) { setRotationSpeed(0.001); setIsSpinning(true); }
-    else if (cmd.includes('stop')) { setIsSpinning(false); }
+    else if (cmd.includes('stop spin') || (cmd.includes('stop') && !cmd.includes('camera') && !cmd.includes('audio'))) { setIsSpinning(false); }
 
     // Camera
     else if (cmd.includes('orbit camera')) { setIsOrbiting(true); }
@@ -183,9 +205,10 @@ export const HologramEngine = () => {
     startRecognition();
   }, [startRecognition]);
 
-  const handleToggleCamera = useCallback(async (forceOn = false) => {
-    const shouldEnable = forceOn || !isCameraActive;
-    console.log('[camera] toggle', { forceOn, isCameraActive, shouldEnable });
+  const handleToggleCamera = useCallback(async (forceState?: boolean) => {
+    // forceState: true = force on, false = force off, undefined = toggle
+    const shouldEnable = forceState !== undefined ? forceState : !isCameraActive;
+    console.log('[camera] toggle', { forceState, isCameraActive, shouldEnable });
 
     if (!shouldEnable) {
       console.log('[camera] stopping');
@@ -276,7 +299,12 @@ export const HologramEngine = () => {
 
       {isInitialized && (
         <>
-          <AudioVisualIntro isActive={showIntro} onComplete={handleIntroComplete} />
+          <AudioVisualIntro 
+            ref={audioIntroRef}
+            isActive={showIntro} 
+            onComplete={handleIntroComplete}
+            onAudioStateChange={setIsAudioPlaying}
+          />
           
           <HUD
             currentShape={currentShape}
@@ -285,8 +313,14 @@ export const HologramEngine = () => {
             isGestureActive={isGestureActive}
             isVoiceActive={isVoiceActive}
             isCameraActive={isCameraActive}
+            isAudioPlaying={isAudioPlaying}
             statusText={statusText}
             onToggleCamera={handleToggleCamera}
+            onStopAudio={() => {
+              audioIntroRef.current?.stopAudio();
+              window.speechSynthesis?.cancel();
+              setIsAudioPlaying(false);
+            }}
           />
           <CommandPanel onCommand={processCommand} />
           <TranscriptDisplay transcript={transcript} />

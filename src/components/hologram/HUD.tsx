@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Hand, Volume2, Mic, Camera } from 'lucide-react';
+import { ChevronDown, ChevronUp, Hand, Volume2, VolumeX, Mic, Camera, CameraOff, Square } from 'lucide-react';
 import { ShapeName } from '@/hooks/useParticleGeometry';
 
 interface HUDProps {
@@ -9,8 +9,10 @@ interface HUDProps {
   isGestureActive: boolean;
   isVoiceActive: boolean;
   isCameraActive: boolean;
+  isAudioPlaying: boolean;
   statusText: string;
   onToggleCamera: () => void;
+  onStopAudio: () => void;
 }
 
 const shapeDisplayNames: Record<ShapeName, string> = {
@@ -35,8 +37,10 @@ export const HUD = ({
   isGestureActive,
   isVoiceActive,
   isCameraActive,
+  isAudioPlaying,
   statusText,
   onToggleCamera,
+  onStopAudio,
 }: HUDProps) => {
   const [isGestureDropdownOpen, setIsGestureDropdownOpen] = useState(false);
 
@@ -65,11 +69,31 @@ export const HUD = ({
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">WEBCAM:</span>
             <button
-              onClick={onToggleCamera}
-              className="px-2 py-0.5 text-xs border border-primary/50 rounded bg-primary/10 hover:bg-primary/20 transition-colors"
+              onClick={() => onToggleCamera()}
+              className={`px-2 py-0.5 text-xs border rounded transition-colors flex items-center gap-1 ${
+                isCameraActive 
+                  ? 'border-red-500/50 bg-red-500/10 hover:bg-red-500/20 text-red-400' 
+                  : 'border-primary/50 bg-primary/10 hover:bg-primary/20'
+              }`}
             >
-              <Camera size={12} className="inline mr-1" />
-              {isCameraActive ? 'ON' : 'OFF'}
+              {isCameraActive ? <CameraOff size={12} /> : <Camera size={12} />}
+              {isCameraActive ? 'STOP ⏹️' : 'START'}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">AUDIO:</span>
+            <button
+              onClick={onStopAudio}
+              disabled={!isAudioPlaying}
+              className={`px-2 py-0.5 text-xs border rounded transition-colors flex items-center gap-1 ${
+                isAudioPlaying 
+                  ? 'border-red-500/50 bg-red-500/10 hover:bg-red-500/20 text-red-400' 
+                  : 'border-muted/30 bg-muted/10 text-muted-foreground cursor-not-allowed'
+              }`}
+            >
+              {isAudioPlaying ? <VolumeX size={12} /> : <Volume2 size={12} />}
+              {isAudioPlaying ? 'STOP ⏹️' : 'IDLE'}
             </button>
           </div>
 
