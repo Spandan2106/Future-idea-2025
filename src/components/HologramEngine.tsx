@@ -7,6 +7,7 @@ import { TranscriptDisplay } from './hologram/TranscriptDisplay';
 import { MicButton } from './hologram/MicButton';
 import { InitOverlay } from './hologram/InitOverlay';
 import { WebcamPreview } from './hologram/WebcamPreview';
+import { AudioVisualIntro } from './hologram/AudioVisualIntro';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
 import { useGestureRecognition } from '@/hooks/useGestureRecognition';
 import { ShapeName } from '@/hooks/useParticleGeometry';
@@ -20,6 +21,7 @@ const allColors = ['neon', 'space', 'red', 'green', 'blue', 'gold', 'violet', 'm
 
 export const HologramEngine = () => {
   const [isInitialized, setIsInitialized] = useState(false);
+  const [showIntro, setShowIntro] = useState(false);
   const [currentShape, setCurrentShape] = useState<ShapeName>('sphere');
   const [colorScheme, setColorScheme] = useState('neon');
   const [isSpinning, setIsSpinning] = useState(true);
@@ -37,6 +39,7 @@ export const HologramEngine = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [statusText, setStatusText] = useState('READY');
+  const [detectedGesture, setDetectedGesture] = useState<string>('None');
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const showcaseIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -144,6 +147,7 @@ export const HologramEngine = () => {
   }, []);
 
   const handleGesture = useCallback((gesture: string) => {
+    setDetectedGesture(gesture);
     if (!isGestureActive) return;
 
     // Simple mapping from gesture to command
@@ -153,10 +157,13 @@ export const HologramEngine = () => {
     } else if (gesture === 'Closed_Fist') {
       processCommand('compress');
       setStatusText('GESTURE: COMPRESS');
+    } else if (gesture === 'Pointing_Up') {
+      processCommand('random shape');
+      setStatusText('GESTURE: RANDOM');
     }
   }, [isGestureActive, processCommand]);
 
-  useGestureRecognition(videoRef, handleGesture);
+  useGestureRecognition(videoRef, handleGesture, isCameraActive);
 
   const { isActive: isVoiceActive, startRecognition, toggleRecognition } = useVoiceRecognition({
     onCommand: processCommand,
@@ -165,10 +172,15 @@ export const HologramEngine = () => {
 
   const handleStart = () => {
     setIsInitialized(true);
-    startRecognition();
+    setShowIntro(true);
     // Automatically start the webcam after initialization
     handleToggleCamera(true);
   };
+
+  const handleIntroComplete = useCallback(() => {
+    setShowIntro(false);
+    startRecognition();
+  }, [startRecognition]);
 
   const handleToggleCamera = useCallback(async (forceOn = false) => {
     const shouldBeActive = forceOn || !isCameraActive;
@@ -229,6 +241,8 @@ export const HologramEngine = () => {
 
       {isInitialized && (
         <>
+          <AudioVisualIntro isActive={showIntro} onComplete={handleIntroComplete} />
+          
           <HUD
             currentShape={currentShape}
             rotationAxis={rotationAxis}
@@ -243,7 +257,11 @@ export const HologramEngine = () => {
           <TranscriptDisplay transcript={transcript} />
           <CommandInput onCommand={processCommand} />
           <MicButton isActive={isVoiceActive} onClick={toggleRecognition} />
-          <WebcamPreview isActive={isCameraActive} videoRef={videoRef} />
+          <WebcamPreview 
+            isActive={isCameraActive} 
+            videoRef={videoRef} 
+            detectedGesture={detectedGesture}
+          />
         </>
       )}
     </div>

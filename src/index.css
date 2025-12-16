@@ -156,6 +156,12 @@
     98% { transform: translate(1px, -2px); }
   }
 
+  @keyframes scan-line {
+    0% { top: 0; opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { top: 100%; opacity: 1; }
+  }
+
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
   }
@@ -174,6 +180,10 @@
 
   .animate-glitch {
     animation: glitch 3s ease-in-out infinite;
+  }
+
+  .animate-scan-line {
+    animation: scan-line 2s ease-in-out infinite;
   }
 
   .glass-panel {

@@ -9,7 +9,8 @@ type Gesture = 'Open_Palm' | 'Closed_Fist' | 'Pointing_Up' | 'None';
 
 export const useGestureRecognition = (
   videoRef: React.RefObject<HTMLVideoElement>,
-  onGesture: (gesture: Gesture) => void
+  onGesture: (gesture: Gesture) => void,
+  isEnabled: boolean = true
 ) => {
   const handLandmarkerRef = useRef<HandLandmarker | null>(null);
   const lastVideoTimeRef = useRef(-1);
@@ -43,7 +44,7 @@ export const useGestureRecognition = (
   }, []);
 
   useEffect(() => {
-    if (!isReady || !videoRef.current) return;
+    if (!isReady || !videoRef.current || !isEnabled) return;
 
     const video = videoRef.current;
 
@@ -122,7 +123,7 @@ export const useGestureRecognition = (
     return () => {
       video.removeEventListener('playing', handlePlaying);
     };
-  }, [isReady, videoRef, onGesture]);
+  }, [isReady, videoRef, onGesture, isEnabled]);
 
   return { isGestureModelReady: isReady };
 };
