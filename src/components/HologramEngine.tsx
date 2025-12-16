@@ -42,6 +42,7 @@ export const HologramEngine = () => {
   const [detectedGesture, setDetectedGesture] = useState<string>('None');
   
   const videoRef = useRef<HTMLVideoElement>(null);
+  const cameraStreamRef = useRef<MediaStream | null>(null);
   const showcaseIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isShowcase, setIsShowcase] = useState(false);
 
@@ -183,30 +184,58 @@ export const HologramEngine = () => {
   }, [startRecognition]);
 
   const handleToggleCamera = useCallback(async (forceOn = false) => {
-    const shouldBeActive = forceOn || !isCameraActive;
+    const shouldEnable = forceOn || !isCameraActive;
+    console.log('[camera] toggle', { forceOn, isCameraActive, shouldEnable });
 
-    if (!shouldBeActive && videoRef.current?.srcObject) {
-      // Turn off camera
-      const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach(track => track.stop());
-      videoRef.current.srcObject = null;
+    if (!shouldEnable) {
+      console.log('[camera] stopping');
+      const stream = cameraStreamRef.current;
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      cameraStreamRef.current = null;
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+      setDetectedGesture('None');
       setIsCameraActive(false);
       return;
     }
 
-    // Turn on camera
     try {
-      if (videoRef.current && !videoRef.current.srcObject) {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play(); // Start playing the video stream
-        setIsCameraActive(true);
-      }
-      }
+      console.log('[camera] requesting getUserMedia');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 480 },
+      });
+      console.log('[camera] stream acquired');
+      cameraStreamRef.current = stream;
+      setDetectedGesture('None');
+      setIsCameraActive(true);
     } catch (e) {
-      console.error('Webcam access was denied or not available.', e);
+      console.error('[camera] getUserMedia failed', e);
+      cameraStreamRef.current = null;
       setIsCameraActive(false);
+      setStatusText('CAMERA DENIED');
+    }
+  }, [isCameraActive]);
+
+
+  useEffect(() => {
+    if (!isCameraActive) return;
+
+    const stream = cameraStreamRef.current;
+    const video = videoRef.current;
+
+    if (!stream || !video) return;
+
+    if (video.srcObject !== stream) {
+      console.log('[camera] attaching stream to video element');
+      video.srcObject = stream;
+    }
+
+    const p = video.play();
+    if (p && typeof (p as Promise<void>).catch === 'function') {
+      (p as Promise<void>).catch((err) => console.warn('[camera] video.play blocked', err));
     }
   }, [isCameraActive]);
 
@@ -216,6 +245,12 @@ export const HologramEngine = () => {
       if (showcaseIntervalRef.current) {
         clearInterval(showcaseIntervalRef.current);
       }
+
+      const stream = cameraStreamRef.current;
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      cameraStreamRef.current = null;
     };
   }, []);
 
