@@ -138,9 +138,24 @@ export const HologramEngine = () => {
     // Camera
     else if (cmd.includes('orbit camera')) { setIsOrbiting(true); }
     else if (cmd.includes('stop orbit')) { setIsOrbiting(false); }
-    else if (cmd.includes('zoom in')) { setCameraDistance(prev => Math.max(60, prev - 40)); }
-    else if (cmd.includes('zoom out')) { setCameraDistance(prev => Math.min(250, prev + 40)); }
+    else if (cmd.includes('zoom in')) { setCameraDistance(prev => Math.max(40, prev - 40)); }
+    else if (cmd.includes('zoom out')) { setCameraDistance(prev => Math.min(300, prev + 40)); }
     else if (cmd.includes('reset camera')) { setCameraDistance(130); setIsOrbiting(false); }
+
+    // Exit command
+    else if (cmd.includes('exit') || cmd.includes('quit') || cmd.includes('close')) {
+      setStatusText('GOODBYE...');
+      window.speechSynthesis?.cancel();
+      audioIntroRef.current?.stopAudio();
+      setTimeout(() => {
+        if (window.opener) {
+          window.close();
+        } else {
+          window.location.href = 'about:blank';
+        }
+      }, 1000);
+      return;
+    }
 
     // Particles
     else if (cmd.includes('size small')) { setParticleSize(1.5); }
