@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
+import { useState, useEffect, useCallback, useImperativeHandle, forwardRef, useRef } from 'react';
 import { Volume2, VolumeX, SkipForward } from 'lucide-react';
 
 export interface AudioVisualIntroRef {
@@ -20,7 +20,7 @@ const introScript = [
   { text: "You can control the hologram using voice commands, gestures, or the command panel", delay: 19500 },
   { text: "Try saying commands like DNA, Galaxy, or Explode to transform the visualization", delay: 24000 },
   { text: "Use hand gestures with your camera - open palm to explode, closed fist to compress", delay: 28500 },
-  { text: "Enjoy exploring the infinite possibilities of the Eon Spark Hologram Engine", delay: 33000 },
+  { text: "Enjoy exploring the infinite possibilities of the  Hologram Engine", delay: 33000 },
 ];
 
 export const AudioVisualIntro = forwardRef<AudioVisualIntroRef, AudioVisualIntroProps>(
@@ -28,7 +28,10 @@ export const AudioVisualIntro = forwardRef<AudioVisualIntroRef, AudioVisualIntro
     const [currentTextIndex, setCurrentTextIndex] = useState(-1);
     const [displayedText, setDisplayedText] = useState('');
     const [isMuted, setIsMuted] = useState(false);
-    const [isTyping, setIsTyping] = useState(false);
+    const [isTyping, setIsTyping] = useState(false); // State for typing animation
+    const [currentStep, setCurrentStep] = useState(0); // State to manage the current step in the intro script
+    const introStartTimeRef = useRef(0); // Ref to store the start time of the intro
+    const stepTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref for the timeout between steps
 
     const stopAudio = useCallback(() => {
       window.speechSynthesis?.cancel();
@@ -39,16 +42,23 @@ export const AudioVisualIntro = forwardRef<AudioVisualIntroRef, AudioVisualIntro
       stopAudio,
     }), [stopAudio]);
 
-    const speak = useCallback((text: string) => {
+    const speak = useCallback((text: string, onSpeechEnd?: () => void) => {
       if ('speechSynthesis' in window && !isMuted) {
-        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 0.9;
         utterance.pitch = 1.1;
         utterance.volume = 0.8;
         
         utterance.onstart = () => onAudioStateChange?.(true);
-        utterance.onend = () => onAudioStateChange?.(false);
+        utterance.onend = () => {
+          onAudioStateChange?.(false);
+          onSpeechEnd?.(); // Call the callback when speech ends
+        };
+        utterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event);
+          onAudioStateChange?.(false);
+          onSpeechEnd?.(); // Also call onSpeechEnd on error to avoid getting stuck
+        };
         
         const voices = window.speechSynthesis.getVoices();
         const preferredVoice = voices.find(v => 
@@ -59,6 +69,8 @@ export const AudioVisualIntro = forwardRef<AudioVisualIntroRef, AudioVisualIntro
         }
         
         window.speechSynthesis.speak(utterance);
+      } else {
+        onSpeechEnd?.(); // If speech synthesis is not available or muted, immediately call onSpeechEnd
       }
     }, [isMuted, onAudioStateChange]);
 
@@ -78,33 +90,72 @@ export const AudioVisualIntro = forwardRef<AudioVisualIntroRef, AudioVisualIntro
       return () => clearInterval(interval);
     }, []);
 
+    // Main effect for managing the intro sequence lifecycle
     useEffect(() => {
-      if (!isActive) return;
+      if (!isActive) {
+        if (stepTimeoutRef.current) clearTimeout(stepTimeoutRef.current);
+        window.speechSynthesis?.cancel();
+        onAudioStateChange?.(false);
+        setCurrentTextIndex(-1); // Reset visual index
+        setDisplayedText('');
+        setIsTyping(false);
+        setCurrentStep(0); // Reset internal step counter
+        return;
+      }
 
       window.speechSynthesis?.getVoices();
-
-      const timeouts: NodeJS.Timeout[] = [];
-
-      introScript.forEach((item, index) => {
-        const timeout = setTimeout(() => {
-          setCurrentTextIndex(index);
-          typeText(item.text);
-          speak(item.text);
-        }, item.delay);
-        timeouts.push(timeout);
-      });
-
-      const completeTimeout = setTimeout(() => {
-        onComplete();
-      }, 38000);
-      timeouts.push(completeTimeout);
+      introStartTimeRef.current = Date.now();
+      setCurrentStep(0); // Start from the beginning
 
       return () => {
-        timeouts.forEach(clearTimeout);
+        if (stepTimeoutRef.current) clearTimeout(stepTimeoutRef.current);
         window.speechSynthesis?.cancel();
         onAudioStateChange?.(false);
       };
-    }, [isActive, speak, typeText, onComplete, onAudioStateChange]);
+    }, [isActive]);
+
+    // Effect to process each step in the intro script
+    useEffect(() => {
+      if (!isActive || currentStep >= introScript.length) {
+        if (currentStep >= introScript.length && isActive) {
+          // All steps completed, trigger onComplete after a small buffer
+          const finalTimeout = setTimeout(() => {
+            onComplete();
+          }, 1000);
+          return () => clearTimeout(finalTimeout);
+        }
+        return;
+      }
+
+      const item = introScript[currentStep];
+      setCurrentTextIndex(currentStep); // Update visual index
+
+      // Type text for the current item
+      typeText(item.text);
+
+      // Speak the text for the current item
+      speak(item.text, () => {
+        // Speech for current item ended. Now, schedule the next item.
+        const nextStepIndex = currentStep + 1;
+        if (nextStepIndex < introScript.length) {
+          const nextItem = introScript[nextStepIndex];
+          const timeElapsedSinceIntroStart = Date.now() - introStartTimeRef.current;
+          const timeToWaitBeforeNextStep = Math.max(0, nextItem.delay - timeElapsedSinceIntroStart);
+
+          stepTimeoutRef.current = setTimeout(() => {
+            setCurrentStep(nextStepIndex); // Advance to the next step
+          }, timeToWaitBeforeNextStep);
+        } else {
+          // Last item finished speaking, let the main effect handle final onComplete
+          setCurrentStep(nextStepIndex); // Mark as complete
+        }
+      });
+
+      return () => {
+        // Cleanup for this specific step if component unmounts or isActive changes
+        if (stepTimeoutRef.current) clearTimeout(stepTimeoutRef.current);
+      };
+    }, [currentStep, isActive, speak, typeText, onComplete]);
 
     const handleSkip = () => {
       window.speechSynthesis?.cancel();
