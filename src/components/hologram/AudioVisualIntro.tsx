@@ -13,14 +13,14 @@ interface AudioVisualIntroProps {
 
 const introScript = [
   { text: "Welcome to Eon Spark Hologram Engine", delay: 0 },
-  { text: "Created by an innovative developer passionate about pushing the boundaries of web technology", delay: 3500 },
-  { text: "This project is a futuristic 3D particle visualization system", delay: 7000 },
-  { text: "Built using cutting-edge technologies including React, Three.js, and React Three Fiber", delay: 11000 },
-  { text: "Featuring real-time particle morphing with twelve unique 3D shapes", delay: 15500 },
-  { text: "You can control the hologram using voice commands, gestures, or the command panel", delay: 19500 },
-  { text: "Try saying commands like DNA, Galaxy, or Explode to transform the visualization", delay: 24000 },
-  { text: "Use hand gestures with your camera - open palm to explode, closed fist to compress", delay: 28500 },
-  { text: "Enjoy exploring the infinite possibilities of the  Hologram Engine", delay: 33000 },
+  { text: "Created by Spandan Das, a passionate developer and B.Tech IT student at TMSL", delay: 3500 },
+  { text: "This project is a futuristic 3D particle visualization system", delay: 8000 },
+  { text: "Built using cutting-edge technologies including React, Three.js, and React Three Fiber", delay: 12000 },
+  { text: "Featuring real-time particle morphing with twelve unique 3D shapes", delay: 16500 },
+  { text: "You can control the hologram using voice commands, gestures, or the command panel", delay: 20500 },
+  { text: "Try saying commands like DNA, Galaxy, or Explode to transform the visualization", delay: 25000 },
+  { text: "Use hand gestures with your camera - open palm to explode, closed fist to compress", delay: 29500 },
+  { text: "Enjoy exploring the infinite possibilities of the Hologram Engine", delay: 34000 },
 ];
 
 export const AudioVisualIntro = forwardRef<AudioVisualIntroRef, AudioVisualIntroProps>(
