@@ -50,6 +50,7 @@ export const CommandPanel = ({ onCommand }: CommandPanelProps) => {
       { label: 'Showcase', cmd: 'showcase' },
       { label: 'Stop Showcase', cmd: 'stop showcase' },
       { label: 'Toggle Gestures', cmd: 'toggle gesture' },
+      { label: '⛔ Exit', cmd: 'exit' },
     ],
     rotation: [
       { label: 'Rotate Vertical', cmd: 'rotate vertical' },

@@ -45,24 +45,32 @@ export const AudioVisualIntro = forwardRef<AudioVisualIntroRef, AudioVisualIntro
     const speak = useCallback((text: string, onSpeechEnd?: () => void) => {
       if ('speechSynthesis' in window && !isMuted) {
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.9;
-        utterance.pitch = 1.1;
-        utterance.volume = 0.8;
+        utterance.rate = 0.85;
+        utterance.pitch = 0.9;
+        utterance.volume = 0.9;
         
         utterance.onstart = () => onAudioStateChange?.(true);
         utterance.onend = () => {
           onAudioStateChange?.(false);
-          onSpeechEnd?.(); // Call the callback when speech ends
+          onSpeechEnd?.();
         };
         utterance.onerror = (event) => {
           console.error('Speech synthesis error:', event);
           onAudioStateChange?.(false);
-          onSpeechEnd?.(); // Also call onSpeechEnd on error to avoid getting stuck
+          onSpeechEnd?.();
         };
         
         const voices = window.speechSynthesis.getVoices();
+        // Prefer male voices with clear pronunciation
         const preferredVoice = voices.find(v => 
-          v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel')
+          v.name.includes('Google UK English Male') ||
+          v.name.includes('Microsoft David') ||
+          v.name.includes('Daniel') ||
+          v.name.includes('Alex') ||
+          v.name.includes('James') ||
+          (v.name.includes('Male') && v.lang.startsWith('en'))
+        ) || voices.find(v => 
+          v.lang.startsWith('en') && !v.name.includes('Female')
         );
         if (preferredVoice) {
           utterance.voice = preferredVoice;
@@ -70,7 +78,7 @@ export const AudioVisualIntro = forwardRef<AudioVisualIntroRef, AudioVisualIntro
         
         window.speechSynthesis.speak(utterance);
       } else {
-        onSpeechEnd?.(); // If speech synthesis is not available or muted, immediately call onSpeechEnd
+        onSpeechEnd?.();
       }
     }, [isMuted, onAudioStateChange]);
 

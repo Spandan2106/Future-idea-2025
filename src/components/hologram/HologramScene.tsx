@@ -50,9 +50,13 @@ export const HologramScene = (props: HologramSceneProps) => {
             enableZoom={true}
             enableRotate={true}
             autoRotate={props.isOrbiting}
-            autoRotateSpeed={0.5}
-            minDistance={60}
-            maxDistance={250}
+            autoRotateSpeed={2.5}
+            minDistance={40}
+            maxDistance={300}
+            enableDamping={true}
+            dampingFactor={0.05}
+            rotateSpeed={0.8}
+            zoomSpeed={1.2}
           />
         </Suspense>
       </Canvas>
