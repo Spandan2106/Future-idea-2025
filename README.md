@@ -93,6 +93,6 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 
 ## Contact
 
-Your Name - @your_twitter - email@example.com
+Your Name - sd672482@gmail.com
 
 Project Link: https://github.com/your-username/your-project-name
