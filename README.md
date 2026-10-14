@@ -74,11 +74,13 @@ npm run dev
 Navigate to  ```http://localhost:5173``` (or the URL displayed in your terminal).
 
 ## 🎮 How to Interact
-Command Mode	Example Commands	Action
-Voice / Terminal	```morph torus / shape sphere```	Transforms the particle field into the specified 3D shape
-Voice / Terminal	```color cyan / theme neon```	Updates the particle color palette and glow shaders
-Voice / Terminal	```explode / gravity``` on	Triggers particle dispersion or gravitational clustering
-Voice / Terminal	```speed up / freeze```	Modifies the particle rotation velocity and simulation flow
+
+| Command Mode | Example Commands | Action |
+| :--- | :--- | :--- |
+| Voice / Terminal | `morph torus` / `shape sphere` | Transforms the particle field into the specified 3D shape |
+| Voice / Terminal | `color cyan` / `theme neon` | Updates the particle color palette and glow shaders |
+| Voice / Terminal | `explode` / `gravity on` | Triggers particle dispersion or gravitational clustering |
+| Voice / Terminal | `speed up` / `freeze` | Modifies the particle rotation velocity and simulation flow |
 ## 🤝 Contributing
 Contributions are always welcome! If you have suggestions or improvements:
 
