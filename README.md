@@ -1,98 +1,105 @@
---# Eon Spark
+<div align="center">
+
+# ✨ Eon Spark
+
+**An interactive 3D holographic particle simulation controlled by voice and terminal commands.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Vite](https://img.shields.io/badge/Built%20With-Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Three.js](https://img.shields.io/badge/Three.js-r128+-black?logo=three.js&logoColor=white)](https://threejs.org/)
+[![Live Demo](https://img.shields.io/badge/Demo-Live%20Preview-brightgreen)](https://future-idea-2025.vercel.app/)
 
-An interactive 3D particle simulation controlled by voice and text commands.
+[🚀 View Live Demo](https://future-idea-2025.vercel.app/) · [Report Bug](https://github.com/Spandan2106/Future-idea-2025/issues) · [Request Feature](https://github.com/Spandan2106/Future-idea-2025/issues)
 
-## Description
+</div>
 
-Eon Spark is a web-based holographic interface that visualizes various 3D shapes as particle systems. Users can interact with the hologram using voice commands or a text-based terminal to change shapes, apply physics simulations, control animations, and modify colors.
+---
 
-![Project link]
-# : https://future-idea-2025.vercel.app/
+## 📖 Overview
 
-## Table of Contents
+**Eon Spark** brings sci-fi holographic interfaces to the browser. Utilizing GPU-accelerated 3D particle systems rendered with Three.js and React Three Fiber, it allows users to manipulate real-time shapes, switch geometry states, apply physical forces, and tweak visual aesthetics via natural voice commands or an integrated interactive command-line interface.
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Contact](#contact)
+---
 
-## Features
+## ⚡ Key Features
 
-- ✨ Feature 1: A short description of a key feature.
-- 🚀 Feature 2: Another cool thing your project can do.
-- 💡 Feature 3: And one more.
+- 🗣️ **Voice-Activated Commands:** Seamless real-time voice control using the Web Speech API to manipulate particles and environments hands-free.
+- 💻 **Integrated Terminal Interface:** Built-in retro-futuristic CLI console for precise manual command input and parameter tuning.
+- 🌌 **Dynamic Geometry Morphing:** Smooth mathematical transitions between complex geometries (spheres, toruses, helixes, nebulas, and custom meshes).
+- ⚛️ **Real-Time Physics Simulation:** Particle force fields, turbulence, gravitational attraction, explosion dynamics, and audio-reactive animations.
+- 🎨 **Visual Customization:** Instant manipulation of particle density, color spectrums, bloom, glow intensity, and rotation dynamics.
+- ⚡ **High Performance:** Optimized instanced particle rendering maintaining smooth 60+ FPS on modern hardware.
 
-## Technologies Used
+---
 
-List the major frameworks, libraries, and tools your project uses.
+## 🛠️ Tech Stack
 
-- [TypeScript](https://www.typescriptlang.org/)
-- [React](https://react.dev/)
-- [Vite](https://vitejs.dev/)
-- [Three.js](https://threejs.org/) & [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
-- [Tailwind CSS](https://tailwindcss.com/)
+- **Framework:** [React](https://react.dev/)
+- **Bundler & Tooling:** [Vite](https://vitejs.dev/) & [TypeScript](https://www.typescriptlang.org/)
+- **3D & Graphics:** [Three.js](https://threejs.org/) & [React Three Fiber](https://docs.pmnd.rs/react-three-fiber) / [@react-three/drei](https://github.com/pmndrs/drei)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Voice Recognition:** Web Speech API
 
-## Installation
+---
 
-Provide step-by-step instructions on how to get a development environment running.
+## 🚀 Getting Started
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/eon-spark.git
-    cd eon-spark
-    ```
+Follow these steps to set up and run the project locally.
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+### Prerequisites
 
-## Usage
+Ensure you have the following installed on your machine:
+- [Node.js](https://nodejs.org/) (v18.0.0 or higher recommended)
+- `npm` or `yarn` / `pnpm`
 
-Start the development server:
+### Installation
 
-```bash
-# Run the development server
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/Spandan2106/Future-idea-2025.git](https://github.com/Spandan2106/Future-idea-2025.git)
+   cd Future-idea-2025
+   ```
+2. **Install dependencies:**
+
+```Bash
+npm install
+```
+3. **Start the development server:**
+
+```Bash
 npm run dev
 ```
+4. **Open your browser:**
+Navigate to  ```http://localhost:5173``` (or the URL displayed in your terminal).
 
-Then, open your browser and go to `http://127.0.0.1:8000`.
+## 🎮 How to Interact
+Command Mode	Example Commands	Action
+Voice / Terminal	```morph torus / shape sphere```	Transforms the particle field into the specified 3D shape
+Voice / Terminal	```color cyan / theme neon```	Updates the particle color palette and glow shaders
+Voice / Terminal	```explode / gravity``` on	Triggers particle dispersion or gravitational clustering
+Voice / Terminal	```speed up / freeze```	Modifies the particle rotation velocity and simulation flow
+## 🤝 Contributing
+Contributions are always welcome! If you have suggestions or improvements:
 
-## Configuration
+* Fork the Project
 
-Explain any necessary configuration or environment variables.
+* Create your Feature Branch (```git checkout -b feature/AmazingFeature```)
 
-Create a `.env` file in the root directory and add the following variables:
+* Commit your Changes (```git commit -m 'Add some AmazingFeature```')
 
-```
-DATABASE_URL="your_database_connection_string"
-SECRET_KEY="your_secret_key"
-```
+* Push to the Branch (```git push origin feature/AmazingFeature```)
 
-## Contributing
+* Open a Pull Request
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+## 📄 License
+Distributed under the MIT License. See ```LICENSE``` for more information.
 
-Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests to us.
+# 📬 Contact
+Spandan Das
 
-## License
+* GitHub: @Spandan2106[https://github.com/Spandan2106]
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+* Email: sd672482@gmail.com[mailto:sd672482@gmail.com]
 
-## Acknowledgments
-
-- Hat tip to anyone whose code was used.
-- Inspiration.
-
-## Contact
-
-Your Name - sd672482@gmail.com
-
-Project Link: https://github.com/Spandan2106/Future-idea-2025
+* Project Repo: Spandan2106/Future-idea-2025[https://github.com/Spandan2106/Future-idea-2025]
